@@ -41,7 +41,7 @@ Return format:
     
     try:
         response = client.chat.completions.create(
-            model="gpt-5-nano",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a nutrition expert. Parse food descriptions into structured JSON data with accurate nutrition information."},
                 {"role": "user", "content": prompt}
@@ -105,7 +105,7 @@ Return format:
     
     try:
         response = client.chat.completions.create(
-            model="gpt-5-nano",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a fitness expert. Parse workout descriptions into structured JSON data."},
                 {"role": "user", "content": prompt}
@@ -151,7 +151,7 @@ Provide simple meal names only, one per line."""
     
     try:
         response = client.chat.completions.create(
-            model="gpt-5-nano",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a nutrition expert providing healthy meal suggestions."},
                 {"role": "user", "content": prompt}
