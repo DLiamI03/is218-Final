@@ -47,7 +47,7 @@ Return format:
                 {"role": "user", "content": prompt}
             ],
             temperature=0.3,
-            max_tokens=1000
+            max_completion_tokens=1000
         )
         
         content = response.choices[0].message.content.strip()
@@ -101,7 +101,7 @@ Return format:
                 {"role": "user", "content": prompt}
             ],
             temperature=0.3,
-            max_tokens=1000
+            max_completion_tokens=1000
         )
         
         content = response.choices[0].message.content.strip()
@@ -140,7 +140,7 @@ Provide simple meal names only, one per line."""
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=200
+            max_completion_tokens=200
         )
         
         content = response.choices[0].message.content.strip()
