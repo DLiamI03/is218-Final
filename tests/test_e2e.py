@@ -9,7 +9,7 @@ BASE_URL = "http://localhost:8000"
 
 @pytest.fixture(scope="session")
 def browser_context_args(browser_context_args):
-    `"""Configure browser context.`"""
+    """Configure browser context."""
     return {
         **browser_context_args,
         "viewport": {
@@ -21,7 +21,7 @@ def browser_context_args(browser_context_args):
 
 @pytest.fixture
 def test_user_credentials():
-    `"""Generate unique test user credentials.`"""
+    """Generate unique test user credentials."""
     timestamp = int(time.time())
     return {
         "username": f"testuser{timestamp}",
@@ -35,10 +35,10 @@ def test_user_credentials():
 
 
 class TestAuthenticationE2E:
-    `"""E2E tests for authentication flows.`"""
+    """E2E tests for authentication flows."""
     
     def test_user_registration_positive(self, page: Page, test_user_credentials):
-        `"""Test successful user registration.`"""
+        """Test successful user registration."""
         page.goto(BASE_URL)
         
         # Click on Register link
@@ -59,7 +59,7 @@ class TestAuthenticationE2E:
         expect(page.locator("#login-form")).to_be_visible()
     
     def test_user_login_positive(self, page: Page, test_user_credentials):
-        `"""Test successful user login.`"""
+        """Test successful user login."""
         page.goto(BASE_URL)
         
         # Register user first
@@ -82,7 +82,7 @@ class TestAuthenticationE2E:
         expect(page.locator("#username-display")).to_contain_text(test_user_credentials["username"])
     
     def test_user_login_invalid_credentials(self, page: Page):
-        `"""Test login with invalid credentials (negative).`"""
+        """Test login with invalid credentials (negative)."""
         page.goto(BASE_URL)
         
         # Try to login with invalid credentials
