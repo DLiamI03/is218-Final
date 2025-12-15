@@ -128,7 +128,6 @@ class FoodDatabaseCreate(BaseModel):
     carbs_g: float = Field(0, ge=0)
     fats_g: float = Field(0, ge=0)
     fiber_g: float = Field(0, ge=0)
-    is_custom: bool = False
 
 
 class FoodDatabaseResponse(BaseModel):

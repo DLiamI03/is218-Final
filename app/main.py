@@ -314,7 +314,9 @@ def create_food_item(
     current_user: User = Depends(get_current_user)
 ):
     """Create a custom food item."""
-    db_food = FoodDatabase(**food.dict(), is_custom=True)
+    food_data = food.dict()
+    food_data['is_custom'] = True  # Override to always be custom
+    db_food = FoodDatabase(**food_data)
     db.add(db_food)
     db.commit()
     db.refresh(db_food)
