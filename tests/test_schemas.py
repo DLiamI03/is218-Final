@@ -35,55 +35,56 @@ def test_user_create_schema_invalid_email():
 def test_meal_log_create_schema():
     """Test MealLogCreate schema."""
     meal_data = {
+        "date": "2025-12-14",
         "meal_type": "breakfast",
-        "food_name": "Oatmeal",
-        "calories": 150,
-        "protein": 5.0,
-        "carbs": 27.0,
-        "fats": 3.0
+        "notes": "Healthy breakfast"
     }
     meal = MealLogCreate(**meal_data)
     
     assert meal.meal_type == "breakfast"
-    assert meal.food_name == "Oatmeal"
-    assert meal.calories == 150
+    assert meal.date.isoformat() == "2025-12-14"
+    assert meal.notes == "Healthy breakfast"
 
 
 def test_workout_session_create_schema():
     """Test WorkoutSessionCreate schema."""
     workout_data = {
-        "exercise_name": "Running",
+        "name": "Morning Run",
+        "date": "2025-12-14",
         "duration_minutes": 30,
-        "calories_burned": 300
+        "total_calories_burned": 300
     }
     workout = WorkoutSessionCreate(**workout_data)
     
-    assert workout.exercise_name == "Running"
+    assert workout.name == "Morning Run"
     assert workout.duration_minutes == 30
-    assert workout.calories_burned == 300
+    assert workout.total_calories_burned == 300
 
 
 def test_body_metric_create_schema():
     """Test BodyMetricCreate schema."""
     metric_data = {
-        "weight": 70.5,
-        "height": 175.0
+        "date": "2025-12-14",
+        "weight_kg": 70.5,
+        "body_fat_percentage": 15.0
     }
     metric = BodyMetricCreate(**metric_data)
     
-    assert metric.weight == 70.5
-    assert metric.height == 175.0
+    assert metric.weight_kg == 70.5
+    assert metric.body_fat_percentage == 15.0
 
 
 def test_goal_create_schema():
     """Test GoalCreate schema."""
     goal_data = {
-        "title": "Lose Weight",
-        "description": "Lose 5kg in 2 months",
-        "target_date": "2025-02-14",
-        "goal_type": "weight_loss"
+        "goal_type": "weight_loss",
+        "target_value": 65.0,
+        "current_value": 70.0,
+        "start_date": "2025-12-14",
+        "target_date": "2025-02-14"
     }
     goal = GoalCreate(**goal_data)
     
-    assert goal.title == "Lose Weight"
     assert goal.goal_type == "weight_loss"
+    assert goal.target_value == 65.0
+    assert goal.current_value == 70.0
