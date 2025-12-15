@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack Pro - Fitness & Nutrition Tracker</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Authentication Section -->
+        <div id="auth-section">
+            <div class="auth-wrapper">
+                <div class="auth-box">
+                    <div class="logo">
+                        <h1>💪 FitTrack Pro</h1>
+                        <p>AI-Powered Fitness & Nutrition Tracking</p>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <div id="login-form" class="auth-form">
+                        <h2>Welcome Back</h2>
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="login-username" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="login-password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <p class="toggle-link">Don't have an account? <a href="#" id="show-register">Sign Up</a></p>
+                        </form>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div id="register-form" class="auth-form" style="display: none;">
+                        <h2>Create Account</h2>
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="register-username" minlength="3" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="register-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="register-password" minlength="6" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Register</button>
+                            <p class="toggle-link">Already have an account? <a href="#" id="show-login">Login</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Application -->
+        <div id="app-section" style="display: none;">
+            <!-- Navigation -->
+            <nav class="navbar">
+                <div class="nav-brand">💪 FitTrack Pro</div>
+                <div class="nav-menu">
+                    <button class="nav-link active" data-view="dashboard">Dashboard</button>
+                    <button class="nav-link" data-view="meals">Meals</button>
+                    <button class="nav-link" data-view="workouts">Workouts</button>
+                    <button class="nav-link" data-view="progress">Progress</button>
+                    <button class="nav-link" data-view="goals">Goals</button>
+                    <button class="nav-link" data-view="search">Search</button>
+                    <button class="nav-link" data-view="insights">Insights</button>
+                    <button class="nav-link" data-view="settings">Settings</button>
+                </div>
+                <div class="nav-user">
+                    <span id="username-display"></span>
+                    <button id="logout-btn" class="btn btn-logout">Logout</button>
+                </div>
+            </nav>
+
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view-container active">
+                <div class="content-wrapper">
+                    <h1>Dashboard</h1>
+                    
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="calories-today">0</div>
+                                <div class="stat-label">Calories Today</div>
+                                <div class="stat-subtext">Target: <span id="calorie-target">--</span></div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏋️</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="workouts-week">0</div>
+                                <div class="stat-label">Workouts This Week</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💧</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="water-today">0 ml</div>
+                                <div class="stat-label">Water Today</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚖️</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="current-weight">--</div>
+                                <div class="stat-label">Current Weight</div>
+                                <div class="stat-subtext">Goal: <span id="goal-weight">--</span> kg</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <h2>Quick Actions</h2>
+                        <div class="quick-grid">
+                            <button class="quick-btn" onclick="showQuickLog('meal')">
+                                <span class="quick-icon">🍽️</span>
+                                Log Meal
+                            </button>
+                            <button class="quick-btn" onclick="showQuickLog('workout')">
+                                <span class="quick-icon">💪</span>
+                                Log Workout
+                            </button>
+                            <button class="quick-btn" onclick="showQuickLog('water')">
+                                <span class="quick-icon">💧</span>
+                                Log Water
+                            </button>
+                            <button class="quick-btn" onclick="showQuickLog('weight')">
+                                <span class="quick-icon">⚖️</span>
+                                Log Weight
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>Weight Progress (Last 30 Days)</h3>
+                            <canvas id="weightChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Nutrition Breakdown Today</h3>
+                            <canvas id="nutritionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meals View -->
+            <div id="meals-view" class="view-container">
+                <div class="content-wrapper">
+                    <div class="view-header">
+                        <h1>Meal Tracker</h1>
+                        <button class="btn btn-primary" onclick="showMealForm()">+ Add Meal</button>
+                    </div>
+
+                    <!-- AI Food Parser -->
+                    <div class="ai-section">
+                        <h3>🤖 AI Food Parser</h3>
+                        <p>Describe what you ate in natural language!</p>
+                        <div class="ai-input-group">
+                            <textarea id="ai-food-input" placeholder="Example: I had 2 scrambled eggs, 2 slices of whole wheat toast with butter, and a banana" rows="2"></textarea>
+                            <button class="btn btn-primary" onclick="parseFood()">Parse with AI</button>
+                        </div>
+                        <div id="ai-food-results"></div>
+                    </div>
+
+                    <!-- Meals List -->
+                    <div class="meals-list">
+                        <h3>Today's Meals</h3>
+                        <div id="meals-container">
+                            <p class="loading">Loading meals...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workouts View -->
+            <div id="workouts-view" class="view-container">
+                <div class="content-wrapper">
+                    <div class="view-header">
+                        <h1>Workout Tracker</h1>
+                        <button class="btn btn-primary" onclick="showWorkoutForm()">+ Add Workout</button>
+                    </div>
+
+                    <!-- AI Workout Parser -->
+                    <div class="ai-section">
+                        <h3>🤖 AI Workout Parser</h3>
+                        <p>Describe your workout in natural language!</p>
+                        <div class="ai-input-group">
+                            <textarea id="ai-workout-input" placeholder="Example: Did 3 sets of 10 pushups, then ran 5k in 25 minutes" rows="2"></textarea>
+                            <button class="btn btn-primary" onclick="parseWorkout()">Parse with AI</button>
+                        </div>
+                        <div id="ai-workout-results"></div>
+                    </div>
+
+                    <!-- Workouts List -->
+                    <div class="workouts-list">
+                        <h3>Recent Workouts</h3>
+                        <div id="workouts-container">
+                            <p class="loading">Loading workouts...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress View -->
+            <div id="progress-view" class="view-container">
+                <div class="content-wrapper">
+                    <h1>Progress Tracker</h1>
+                    
+                    <div class="progress-section">
+                        <h3>Body Metrics</h3>
+                        <button class="btn btn-primary" onclick="showQuickLog('weight')">+ Add Weight Entry</button>
+                        <div id="metrics-list"></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Weight Trend (Last 90 Days)</h3>
+                        <canvas id="progressWeightChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals View -->
+            <div id="goals-view" class="view-container">
+                <div class="content-wrapper">
+                    <div class="view-header">
+                        <h1>Goals Tracker</h1>
+                        <button class="btn btn-primary" onclick="showGoalForm()">+ Create Goal</button>
+                    </div>
+
+                    <div class="goals-grid">
+                        <div class="goal-category">
+                            <h3>Active Goals</h3>
+                            <div id="active-goals-list"></div>
+                        </div>
+                        <div class="goal-category">
+                            <h3>Completed Goals 🎉</h3>
+                            <div id="completed-goals-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search View -->
+            <div id="search-view" class="view-container">
+                <div class="content-wrapper">
+                    <h1>Food & Exercise Database</h1>
+                    
+                    <div class="search-section">
+                        <div class="search-tabs">
+                            <button class="search-tab active" data-search="foods">🍎 Foods</button>
+                            <button class="search-tab" data-search="exercises">💪 Exercises</button>
+                        </div>
+
+                        <!-- Food Search -->
+                        <div id="food-search" class="search-content active">
+                            <div class="search-bar">
+                                <input type="text" id="food-search-input" placeholder="Search foods...">
+                                <button class="btn btn-primary" onclick="searchFoods()">Search</button>
+                                <button class="btn btn-primary" onclick="showCreateFoodForm()">+ Create Custom Food</button>
+                            </div>
+                            <div id="food-search-results"></div>
+                        </div>
+
+                        <!-- Exercise Search -->
+                        <div id="exercise-search" class="search-content">
+                            <div class="search-bar">
+                                <input type="text" id="exercise-search-input" placeholder="Search exercises...">
+                                <button class="btn btn-primary" onclick="searchExercises()">Search</button>
+                                <button class="btn btn-primary" onclick="showCreateExerciseForm()">+ Create Custom Exercise</button>
+                            </div>
+                            <div id="exercise-search-results"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights View -->
+            <div id="insights-view" class="view-container">
+                <div class="content-wrapper">
+                    <h1>🤖 AI Nutrition Insights</h1>
+                    
+                    <div class="insights-section">
+                        <div class="insight-card">
+                            <h3>📊 Weekly Summary</h3>
+                            <div id="weekly-summary"></div>
+                        </div>
+
+                        <div class="insight-card">
+                            <h3>🍽️ AI Meal Suggestions</h3>
+                            <p>Get personalized meal ideas based on your preferences</p>
+                            <div class="form-group">
+                                <label>Dietary Preferences</label>
+                                <input type="text" id="meal-preferences" placeholder="e.g., high protein, low carb">
+                            </div>
+                            <div class="form-group">
+                                <label>Dietary Restrictions</label>
+                                <input type="text" id="meal-restrictions" placeholder="e.g., gluten-free, vegan">
+                            </div>
+                            <button class="btn btn-primary" onclick="getAIMealSuggestions()">Get Suggestions</button>
+                            <div id="meal-suggestions-results"></div>
+                        </div>
+
+                        <div class="insight-card">
+                            <h3>📈 Progress Analysis</h3>
+                            <div id="progress-analysis"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings-view" class="view-container">
+                <div class="content-wrapper">
+                    <h1>⚙️ Settings</h1>
+                    
+                    <div class="settings-sections">
+                        <!-- Profile Settings -->
+                        <div class="settings-card">
+                            <h3>👤 Profile Information</h3>
+                            <form id="profile-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Date of Birth</label>
+                                        <input type="date" id="profile-dob">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Height (cm)</label>
+                                        <input type="number" id="profile-height" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Current Weight (kg)</label>
+                                        <input type="number" id="profile-weight" step="0.1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Goal Weight (kg)</label>
+                                        <input type="number" id="profile-goal-weight" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Activity Level</label>
+                                        <select id="profile-activity">
+                                            <option value="sedentary">Sedentary (little/no exercise)</option>
+                                            <option value="light">Light (1-3 days/week)</option>
+                                            <option value="moderate">Moderate (3-5 days/week)</option>
+                                            <option value="active">Active (6-7 days/week)</option>
+                                            <option value="very_active">Very Active (2x per day)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Goal Type</label>
+                                        <select id="profile-goal-type">
+                                            <option value="lose_weight">Lose Weight</option>
+                                            <option value="gain_weight">Gain Weight</option>
+                                            <option value="maintain">Maintain Weight</option>
+                                            <option value="build_muscle">Build Muscle</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Daily Calorie Target</label>
+                                    <input type="number" id="profile-calorie-target" step="50">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Profile</button>
+                            </form>
+                        </div>
+
+                        <!-- Data Export -->
+                        <div class="settings-card">
+                            <h3>📥 Export Data</h3>
+                            <p>Download your fitness data</p>
+                            <div class="export-buttons">
+                                <button class="btn btn-primary" onclick="exportData('meals')">📄 Export Meals (CSV)</button>
+                                <button class="btn btn-primary" onclick="exportData('workouts')">📄 Export Workouts (CSV)</button>
+                                <button class="btn btn-primary" onclick="exportData('metrics')">📄 Export Body Metrics (CSV)</button>
+                                <button class="btn btn-primary" onclick="exportData('all')">📦 Export All Data (JSON)</button>
+                            </div>
+                        </div>
+
+                        <!-- Account Info -->
+                        <div class="settings-card">
+                            <h3>🔐 Account Information</h3>
+                            <div class="account-info">
+                                <p><strong>Username:</strong> <span id="settings-username"></span></p>
+                                <p><strong>Email:</strong> <span id="settings-email"></span></p>
+                                <p><strong>Member Since:</strong> <span id="settings-created"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="modal-overlay" class="modal-overlay" onclick="closeModal()"></div>
+        
+        <!-- Quick Log Modals -->
+        <div id="quick-modal" class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Quick Log</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-content"></div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: fittrack_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - fittrack-network
+
+  web:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/fittrack_db
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - fittrack-network
+      - caddy-network
+    labels:
+      caddy: fittrack.yourdomain.com
+      caddy.reverse_proxy: "{{upstreams 8000}}"
+
+volumes:
+  postgres_data:
+
+networks:
+  fittrack-network:
+    driver: bridge
+  caddy-network:
+    external: true

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculation Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login/Register Section -->
+        <div id="auth-section">
+            <div class="auth-container">
+                <h1>Calculation Manager</h1>
+                
+                <!-- Login Form -->
+                <div id="login-form" class="form-section">
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="login-username">Username:</label>
+                            <input type="text" id="login-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password:</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <p class="toggle-form">Don't have an account? <a href="#" id="show-register">Register</a></p>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="form-section" style="display: none;">
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="register-username">Username:</label>
+                            <input type="text" id="register-username" minlength="3" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email:</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password:</label>
+                            <input type="password" id="register-password" minlength="6" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <p class="toggle-form">Already have an account? <a href="#" id="show-login">Login</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Application Section -->
+        <div id="app-section" style="display: none;">
+            <div class="header">
+                <h1>Calculation Manager</h1>
+                <div class="user-info">
+                    <span id="username-display"></span>
+                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+
+            <!-- Add/Edit Calculation Form -->
+            <div class="card">
+                <h2 id="form-title">Add New Calculation</h2>
+                <form id="calculationForm">
+                    <input type="hidden" id="calculation-id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="operand1">First Operand:</label>
+                            <input type="number" id="operand1" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="operation">Operation:</label>
+                            <select id="operation" required>
+                                <option value="">Select Operation</option>
+                                <option value="add">Addition (+)</option>
+                                <option value="subtract">Subtraction (-)</option>
+                                <option value="multiply">Multiplication (×)</option>
+                                <option value="divide">Division (÷)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="operand2">Second Operand:</label>
+                            <input type="number" id="operand2" step="any" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submit-btn">Add Calculation</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Calculations List -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Your Calculations</h2>
+                    <button id="refresh-btn" class="btn btn-secondary">Refresh</button>
+                </div>
+                <div id="calculations-list">
+                    <p class="loading">Loading calculations...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Toast -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
