@@ -5,6 +5,9 @@ from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from pydantic import EmailStr
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import os
 import traceback
 
@@ -16,8 +19,15 @@ from app.auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
 
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 # Create FastAPI app
 app = FastAPI(title="Application API", version="1.0.0")
+
+# Add rate limiter to app
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Global exception handler to ensure JSON responses
 @app.exception_handler(Exception)
@@ -67,7 +77,8 @@ async def root():
 
 # User Registration
 @app.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def register(user: UserCreate, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def register(request: Request, user: UserCreate, db: Session = Depends(get_db)):
     """Register a new user and send verification email."""
     from app.email_service import generate_verification_token, send_verification_email
     
@@ -108,7 +119,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 # User Login
 @app.post("/token", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Login and get access token."""
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
