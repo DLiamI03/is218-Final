@@ -21,6 +21,11 @@ async function apiRequest(endpoint, options = {}) {
         throw new Error('Unauthorized');
     }
 
+    // Handle 204 No Content (DELETE requests)
+    if (response.status === 204) {
+        return null;
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
@@ -383,31 +388,35 @@ async function submitQuickMeal(e) {
     e.preventDefault();
     const mealType = document.getElementById('quick-meal-type').value;
     const mealName = document.getElementById('quick-meal-name').value;
-    const calories = parseInt(document.getElementById('quick-meal-calories').value);
-    const protein = parseFloat(document.getElementById('quick-meal-protein').value);
-    const carbs = parseFloat(document.getElementById('quick-meal-carbs').value);
-    const fats = parseFloat(document.getElementById('quick-meal-fats').value);
+    const calories = parseInt(document.getElementById('quick-meal-calories').value) || 0;
+    const protein = parseFloat(document.getElementById('quick-meal-protein').value) || 0;
+    const carbs = parseFloat(document.getElementById('quick-meal-carbs').value) || 0;
+    const fats = parseFloat(document.getElementById('quick-meal-fats').value) || 0;
     const notes = document.getElementById('quick-meal-notes').value;
     
     try {
+        console.log('Creating custom food:', { mealName, calories, protein, carbs, fats });
+        
         // Create a custom food with the nutrition data
         const food = await apiRequest('/foods', {
             method: 'POST',
             body: JSON.stringify({
                 name: mealName,
                 brand: null,
-                serving_size: 1,
+                serving_size: 1.0,
                 serving_unit: 'serving',
                 calories: calories,
                 protein_g: protein,
                 carbs_g: carbs,
                 fats_g: fats,
-                fiber_g: 0
+                fiber_g: 0.0
             })
         });
         
+        console.log('Food created:', food);
+        
         // Create meal and link the food
-        await apiRequest('/meals', {
+        const meal = await apiRequest('/meals', {
             method: 'POST',
             body: JSON.stringify({
                 date: new Date().toISOString().split('T')[0],
@@ -415,16 +424,19 @@ async function submitQuickMeal(e) {
                 notes: notes || null,
                 foods: [{
                     food_id: food.id,
-                    servings: 1
+                    servings: 1.0
                 }]
             })
         });
         
+        console.log('Meal created:', meal);
+        
         showToast('Meal logged successfully!');
         closeModal();
         loadDashboard();
-        loadMeals();
+        if (typeof loadMeals === 'function') loadMeals();
     } catch (error) {
+        console.error('Error logging meal:', error);
         showToast('Error logging meal: ' + error.message, true);
     }
 }
@@ -613,7 +625,10 @@ async function deleteMeal(id) {
         loadMeals();
         loadDashboard();
     } catch (error) {
-        showToast('Error deleting meal', true);
+        console.error('Delete meal error:', error);
+        // Don't show error - reload to reflect actual state
+        loadMeals();
+        loadDashboard();
     }
 }
 
@@ -660,7 +675,10 @@ async function deleteWorkout(id) {
         loadWorkouts();
         loadDashboard();
     } catch (error) {
-        showToast('Error deleting workout', true);
+        console.error('Delete workout error:', error);
+        // Don't show error - reload to reflect actual state
+        loadWorkouts();
+        loadDashboard();
     }
 }
 
