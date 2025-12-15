@@ -4,7 +4,11 @@
 ![Tests](https://github.com/DLiamI03/is218-Final/actions/workflows/tests.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-🌐 **Live Demo:** [Add your hosted URL here]
+## 🌐 Live Demo
+
+**🚀 Try it now:** [http://159.203.79.244:8000](http://159.203.79.244:8000)
+
+---
 
 A full-stack web application that helps users track their fitness journey with **AI-powered food and workout parsing** using OpenAI's GPT API.
 
