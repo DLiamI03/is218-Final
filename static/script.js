@@ -292,8 +292,32 @@ function showQuickLog(type) {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="quick-meal-desc" rows="3" placeholder="Describe what you ate..."></textarea>
+                    <label>Meal Name</label>
+                    <input type="text" id="quick-meal-name" placeholder="e.g., Chicken Salad" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Calories</label>
+                        <input type="number" id="quick-meal-calories" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Protein (g)</label>
+                        <input type="number" id="quick-meal-protein" step="0.1" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Carbs (g)</label>
+                        <input type="number" id="quick-meal-carbs" step="0.1" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Fats (g)</label>
+                        <input type="number" id="quick-meal-fats" step="0.1" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes (optional)</label>
+                    <textarea id="quick-meal-notes" rows="2" placeholder="Additional details..."></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Log Meal</button>
             </form>
@@ -358,23 +382,48 @@ function closeModal() {
 async function submitQuickMeal(e) {
     e.preventDefault();
     const mealType = document.getElementById('quick-meal-type').value;
-    const description = document.getElementById('quick-meal-desc').value;
+    const mealName = document.getElementById('quick-meal-name').value;
+    const calories = parseInt(document.getElementById('quick-meal-calories').value);
+    const protein = parseFloat(document.getElementById('quick-meal-protein').value);
+    const carbs = parseFloat(document.getElementById('quick-meal-carbs').value);
+    const fats = parseFloat(document.getElementById('quick-meal-fats').value);
+    const notes = document.getElementById('quick-meal-notes').value;
     
     try {
-        // Note: This is simplified - in production you'd parse the food properly
+        // Create a custom food with the nutrition data
+        const food = await apiRequest('/foods', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: mealName,
+                brand: null,
+                serving_size: 1,
+                serving_unit: 'serving',
+                calories: calories,
+                protein_g: protein,
+                carbs_g: carbs,
+                fats_g: fats,
+                fiber_g: 0
+            })
+        });
+        
+        // Create meal and link the food
         await apiRequest('/meals', {
             method: 'POST',
             body: JSON.stringify({
                 date: new Date().toISOString().split('T')[0],
                 meal_type: mealType,
-                notes: description,
-                foods: []
+                notes: notes || null,
+                foods: [{
+                    food_id: food.id,
+                    servings: 1
+                }]
             })
         });
         
         showToast('Meal logged successfully!');
         closeModal();
         loadDashboard();
+        loadMeals();
     } catch (error) {
         showToast('Error logging meal: ' + error.message, true);
     }

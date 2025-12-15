@@ -71,7 +71,6 @@
                     <button class="nav-link" data-view="workouts">Workouts</button>
                     <button class="nav-link" data-view="progress">Progress</button>
                     <button class="nav-link" data-view="goals">Goals</button>
-                    <button class="nav-link" data-view="search">Search</button>
                     <button class="nav-link" data-view="insights">Insights</button>
                     <button class="nav-link" data-view="settings">Settings</button>
                 </div>
@@ -249,40 +248,6 @@
                         <div class="goal-category">
                             <h3>Completed Goals 🎉</h3>
                             <div id="completed-goals-list"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Search View -->
-            <div id="search-view" class="view-container">
-                <div class="content-wrapper">
-                    <h1>Food & Exercise Database</h1>
-                    
-                    <div class="search-section">
-                        <div class="search-tabs">
-                            <button class="search-tab active" data-search="foods">🍎 Foods</button>
-                            <button class="search-tab" data-search="exercises">💪 Exercises</button>
-                        </div>
-
-                        <!-- Food Search -->
-                        <div id="food-search" class="search-content active">
-                            <div class="search-bar">
-                                <input type="text" id="food-search-input" placeholder="Search foods...">
-                                <button class="btn btn-primary" onclick="searchFoods()">Search</button>
-                                <button class="btn btn-primary" onclick="showCreateFoodForm()">+ Create Custom Food</button>
-                            </div>
-                            <div id="food-search-results"></div>
-                        </div>
-
-                        <!-- Exercise Search -->
-                        <div id="exercise-search" class="search-content">
-                            <div class="search-bar">
-                                <input type="text" id="exercise-search-input" placeholder="Search exercises...">
-                                <button class="btn btn-primary" onclick="searchExercises()">Search</button>
-                                <button class="btn btn-primary" onclick="showCreateExerciseForm()">+ Create Custom Exercise</button>
-                            </div>
-                            <div id="exercise-search-results"></div>
                         </div>
                     </div>
                 </div>
