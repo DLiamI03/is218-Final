@@ -177,8 +177,10 @@ async function loadDashboard() {
         document.getElementById('calories-today').textContent = data.total_calories_today;
         document.getElementById('calorie-target').textContent = data.calories_target || '--';
         document.getElementById('workouts-week').textContent = data.workouts_this_week;
-        document.getElementById('water-today').textContent = `${data.total_water_today} ml`;
-        document.getElementById('current-weight').textContent = data.current_weight ? `${data.current_weight} kg` : '--';
+        const waterOz = Math.round(data.total_water_today / 29.5735);
+        document.getElementById('water-today').textContent = `${waterOz} oz`;
+        const weightLbs = data.current_weight ? Math.round(data.current_weight * 2.20462 * 10) / 10 : null;
+        document.getElementById('current-weight').textContent = weightLbs ? `${weightLbs} lbs` : '--';
         document.getElementById('goal-weight').textContent = data.goal_weight || '--';
         
         // Load charts
@@ -204,8 +206,8 @@ async function loadWeightChart() {
             data: {
                 labels: metrics.map(m => m.date).reverse(),
                 datasets: [{
-                    label: 'Weight (kg)',
-                    data: metrics.map(m => m.weight_kg).reverse(),
+                    label: 'Weight (lbs)',
+                    data: metrics.map(m => Math.round(m.weight_kg * 2.20462 * 10) / 10).reverse(),
                     borderColor: '#6366f1',
                     backgroundColor: 'rgba(99, 102, 241, 0.1)',
                     tension: 0.4,
@@ -307,8 +309,8 @@ function showQuickLog(type) {
         html = `
             <form onsubmit="submitQuickWater(event)">
                 <div class="form-group">
-                    <label>Amount (ml)</label>
-                    <input type="number" id="quick-water-amount" min="1" value="250" step="50" required>
+                    <label>Amount (oz)</label>
+                    <input type="number" id="quick-water-amount" min="1" value="8" step="1" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Log Water</button>
             </form>
@@ -318,7 +320,7 @@ function showQuickLog(type) {
         html = `
             <form onsubmit="submitQuickWeight(event)">
                 <div class="form-group">
-                    <label>Weight (kg)</label>
+                    <label>Weight (lbs)</label>
                     <input type="number" id="quick-weight" step="0.1" required>
                 </div>
                 <div class="form-group">
@@ -393,14 +395,15 @@ async function submitQuickWorkout(e) {
 
 async function submitQuickWater(e) {
     e.preventDefault();
-    const amount = parseInt(document.getElementById('quick-water-amount').value);
+    const amountOz = parseInt(document.getElementById('quick-water-amount').value);
+    const amountMl = Math.round(amountOz * 29.5735); // Convert oz to ml
     
     try {
         await apiRequest('/water', {
             method: 'POST',
             body: JSON.stringify({
                 date: new Date().toISOString().split('T')[0],
-                amount_ml: amount
+                amount_ml: amountMl
             })
         });
         
@@ -414,7 +417,8 @@ async function submitQuickWater(e) {
 
 async function submitQuickWeight(e) {
     e.preventDefault();
-    const weight = parseFloat(document.getElementById('quick-weight').value);
+    const weightLbs = parseFloat(document.getElementById('quick-weight').value);
+    const weightKg = weightLbs * 0.453592; // Convert lbs to kg
     const bodyfat = document.getElementById('quick-bodyfat').value;
     
     try {
@@ -422,7 +426,7 @@ async function submitQuickWeight(e) {
             method: 'POST',
             body: JSON.stringify({
                 date: new Date().toISOString().split('T')[0],
-                weight_kg: weight,
+                weight_kg: weightKg,
                 body_fat_percentage: bodyfat ? parseFloat(bodyfat) : null
             })
         });
@@ -633,11 +637,11 @@ async function loadProgress() {
 
 // Placeholder functions for form displays
 function showMealForm() {
-    showToast('Use the AI parser below to log meals!');
+    openQuickLog('meal');
 }
 
 function showWorkoutForm() {
-    showToast('Use the AI parser below to log workouts!');
+    openQuickLog('workout');
 }
 
 // ===== GOALS VIEW =====
