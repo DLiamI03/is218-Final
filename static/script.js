@@ -234,23 +234,36 @@ function loadNutritionChart(dashboardData) {
     const ctx = document.getElementById('nutritionChart');
     if (nutritionChart) nutritionChart.destroy();
     
+    const protein = dashboardData.total_protein_today || 0;
+    const carbs = dashboardData.total_carbs_today || 0;
+    const fats = dashboardData.total_fats_today || 0;
+    
+    // If no data, show placeholder values
+    const hasData = protein > 0 || carbs > 0 || fats > 0;
+    
     nutritionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Protein', 'Carbs', 'Fats'],
+            labels: hasData ? ['Protein', 'Carbs', 'Fats'] : ['No data yet'],
             datasets: [{
-                data: [
-                    dashboardData.total_protein_today,
-                    dashboardData.total_carbs_today,
-                    dashboardData.total_fats_today
-                ],
-                backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+                data: hasData ? [protein, carbs, fats] : [1],
+                backgroundColor: hasData ? ['#10b981', '#f59e0b', '#ef4444'] : ['#334155']
             }]
         },
         options: {
             responsive: true,
             plugins: {
-                legend: { labels: { color: '#f1f5f9' } }
+                legend: { labels: { color: '#f1f5f9' } },
+                tooltip: {
+                    enabled: hasData,
+                    callbacks: hasData ? {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed;
+                            return label + ': ' + Math.round(value * 10) / 10 + 'g';
+                        }
+                    } : {}
+                }
             }
         }
     });
