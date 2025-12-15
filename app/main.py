@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from pydantic import EmailStr
 import os
 import traceback
 
