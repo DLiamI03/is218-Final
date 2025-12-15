@@ -41,7 +41,7 @@ Return format:
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-nano",
             messages=[
                 {"role": "system", "content": "You are a nutrition expert. Parse food descriptions into structured JSON data with accurate nutrition information."},
                 {"role": "user", "content": prompt}
@@ -62,20 +62,10 @@ Return format:
         return food_items if isinstance(food_items, list) else [food_items]
         
     except Exception as e:
-        print(f"Error parsing food with AI: {e}")
-        # Fallback: return a generic item
-        return [{
-            "name": text[:50],
-            "brand": None,
-            "serving_size": 1.0,
-            "serving_unit": "serving",
-            "calories": 200,
-            "protein_g": 10.0,
-            "carbs_g": 20.0,
-            "fats_g": 8.0,
-            "fiber_g": 2.0,
-            "is_custom": True
-        }]
+        error_msg = f"Error parsing food with AI: {str(e)}"
+        print(error_msg)
+        # Re-raise the exception so the user can see what's wrong
+        raise Exception(f"AI parsing failed: {str(e)}")
 
 
 def parse_workout_with_ai(text: str) -> List[Dict]:
@@ -105,7 +95,7 @@ Return format:
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-nano",
             messages=[
                 {"role": "system", "content": "You are a fitness expert. Parse workout descriptions into structured JSON data."},
                 {"role": "user", "content": prompt}
@@ -126,17 +116,10 @@ Return format:
         return exercises if isinstance(exercises, list) else [exercises]
         
     except Exception as e:
-        print(f"Error parsing workout with AI: {e}")
-        # Fallback: return a generic exercise
-        return [{
-            "name": text[:50],
-            "category": "cardio",
-            "muscle_group": None,
-            "sets": None,
-            "reps": None,
-            "duration_minutes": 30,
-            "weight_kg": None
-        }]
+        error_msg = f"Error parsing workout with AI: {str(e)}"
+        print(error_msg)
+        # Re-raise the exception so the user can see what's wrong
+        raise Exception(f"AI parsing failed: {str(e)}")
 
 
 def get_meal_suggestions(preferences: str = "", dietary_restrictions: str = "") -> List[str]:
@@ -151,7 +134,7 @@ Provide simple meal names only, one per line."""
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-nano",
             messages=[
                 {"role": "system", "content": "You are a nutrition expert providing healthy meal suggestions."},
                 {"role": "user", "content": prompt}
@@ -165,11 +148,7 @@ Provide simple meal names only, one per line."""
         return suggestions[:5]
         
     except Exception as e:
-        print(f"Error getting meal suggestions: {e}")
-        return [
-            "Grilled chicken with quinoa and vegetables",
-            "Salmon with sweet potato and broccoli",
-            "Greek yogurt with berries and granola",
-            "Turkey and avocado wrap",
-            "Vegetable stir-fry with tofu"
-        ]
+        error_msg = f"Error getting meal suggestions: {str(e)}"
+        print(error_msg)
+        # Re-raise the exception so the user can see what's wrong
+        raise Exception(f"AI suggestions failed: {str(e)}")
