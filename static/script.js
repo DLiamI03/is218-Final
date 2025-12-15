@@ -637,11 +637,11 @@ async function loadProgress() {
 
 // Placeholder functions for form displays
 function showMealForm() {
-    openQuickLog('meal');
+    showQuickLog('meal');
 }
 
 function showWorkoutForm() {
-    openQuickLog('workout');
+    showQuickLog('workout');
 }
 
 // ===== GOALS VIEW =====
