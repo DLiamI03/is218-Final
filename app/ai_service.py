@@ -45,8 +45,7 @@ Return format:
             messages=[
                 {"role": "system", "content": "You are a nutrition expert. Parse food descriptions into structured JSON data with accurate nutrition information."},
                 {"role": "user", "content": prompt}
-            ],
-            temperature=0.3
+            ]
         )
         
         content = response.choices[0].message.content.strip()
@@ -98,8 +97,7 @@ Return format:
             messages=[
                 {"role": "system", "content": "You are a fitness expert. Parse workout descriptions into structured JSON data."},
                 {"role": "user", "content": prompt}
-            ],
-            temperature=0.3
+            ]
         )
         
         content = response.choices[0].message.content.strip()
@@ -136,8 +134,7 @@ Provide simple meal names only, one per line."""
             messages=[
                 {"role": "system", "content": "You are a nutrition expert providing healthy meal suggestions."},
                 {"role": "user", "content": prompt}
-            ],
-            temperature=0.7
+            ]
         )
         
         content = response.choices[0].message.content.strip()
