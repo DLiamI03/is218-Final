@@ -472,6 +472,12 @@ async function submitQuickWater(e) {
     const amountOz = parseInt(document.getElementById('quick-water-amount').value);
     const amountMl = Math.round(amountOz * 29.5735); // Convert oz to ml
     
+    // Validate reasonable amount (max ~1700 oz = 50L)
+    if (amountOz > 1700) {
+        showToast('Amount too large. Please enter a reasonable amount (max 1700 oz)', true);
+        return;
+    }
+    
     try {
         await apiRequest('/water', {
             method: 'POST',
@@ -485,7 +491,9 @@ async function submitQuickWater(e) {
         closeModal();
         loadDashboard();
     } catch (error) {
-        showToast('Error logging water: ' + error.message, true);
+        console.error('Water logging error:', error);
+        const errorMsg = error.message || JSON.stringify(error);
+        showToast('Error logging water: ' + errorMsg, true);
     }
 }
 

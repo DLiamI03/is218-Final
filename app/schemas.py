@@ -271,7 +271,7 @@ class WorkoutSessionResponse(BaseModel):
 # Water Intake Schemas
 class WaterIntakeCreate(BaseModel):
     date: date
-    amount_ml: int = Field(..., gt=0, le=10000)
+    amount_ml: int = Field(..., gt=0, le=50000)
 
 
 class WaterIntakeResponse(BaseModel):
